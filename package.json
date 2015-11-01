@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "node-telegram-bot-api": "0.15.0",
+    "request": "^2.36.0",
+    "lodash": "^3.10.0"
+  }
+}
