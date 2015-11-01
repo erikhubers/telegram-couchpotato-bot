@@ -6,7 +6,7 @@ Contact [@BotFather](http://telegram.me/BotFather) on Telegram to get a bot toke
 
 ## Usage
 
-Make sure you have node and npm installed then
+Make sure you have node, npm, and git installed then
 
 **Clone the repo**
 ```bash 
