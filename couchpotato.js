@@ -24,6 +24,8 @@ bot.onText(/\/search (.+)/, function (msg, match) {
 
 	couchpotato.get("movie.search", { "q": movieName }).then(function (result) {
 		
+		console.log('search: sending ' + chatId + ' a request to add a movie ' + movieName);
+		
 		// create keyboard choices
 		var keyboardOpts = [];
 	    	_.forEach(result.movies, function(n, key) {
@@ -42,11 +44,11 @@ bot.onText(/\/search (.+)/, function (msg, match) {
 				"keyboard": keyboardOpts,
 			})
 	    	};
-
+	    	
 		bot.sendMessage(chatId, 'Choose a movie to add:', opts);
 	}).catch(function (err) {
-		bot.sendMessage(chatId, 'Error searching movie');
 		console.log(err);
+		bot.sendMessage(chatId, 'search: error searching movie');
 	});
 });
 
@@ -57,9 +59,15 @@ bot.onText(/\/add (.+)([\d]{4})\/(tt[\d]+)/, function (msg, match) {
 	var movieId = match[3];
 
 	couchpotato.get("movie.add", { "identifier": movieId, "title": movieName }).then(function (result) {
+		
+		console.log('add: sending ' + chatId + ' a request to add ' + movieName + ' (' + movieId + ')');
+		
 		couchpotato.get("media.get", { "id": movieId }).then(function (result) {	
+			
 			var moviePoster = result.media.info.images.poster[0];
-
+			
+			console.log('add: sending ' + chatId + ' a poster ' + moviePoster);
+			
 			var opts = {
 				"parse_mode": "Markdown",
 				"reply_to_message_id": msg.message_id,
@@ -72,11 +80,12 @@ bot.onText(/\/add (.+)([\d]{4})\/(tt[\d]+)/, function (msg, match) {
 
 			bot.sendMessage(chatId, '[Movie added!](' + moviePoster + ')', opts);
 		}).catch(function (err) {
-			bot.sendMessage(chatId, 'Error getting artwork');
 			console.log(err);
-		});	
+			bot.sendMessage(chatId, 'add: error getting artwork');
+		});
+	
 	}).catch(function (err) {
-		bot.sendMessage(chatId, 'Error adding movie');
 		console.log(err);
+		bot.sendMessage(chatId, 'add: error adding movie');
 	});
 });
