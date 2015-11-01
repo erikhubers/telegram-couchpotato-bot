@@ -18,7 +18,7 @@ var couchpotato = new CouchPotatoAPI({
 	password: config.couchpotato.password
 });
 
-bot.onText(/\/search (.+)/, function (msg, match) {
+bot.onText(/\/[Ss]earch (.+)/, function (msg, match) {
 	var chatId = msg.chat.id;
 	var movieName = match[1];
 
