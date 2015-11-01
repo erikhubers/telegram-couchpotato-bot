@@ -48,10 +48,15 @@ Please refer to the CouchPotato specific configuration below:
 - **password**: HTTP Auth password (default: null)
 
 
-**Start the bot node, forever, pm2 or w/e**
+**Start the bot with node, forever, pm2 or w/e**
 ```bash
 $ node couchpotato.js
 ```
 
 **Add a movie :) send a message to the bot you created**
+
 `/search ernest goes to`
+
+![Ernest 1](http://i.imgur.com/rkXQVIz.png)
+
+![Ernest 2](http://i.imgur.com/lzi3h5d.png)
