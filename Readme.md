@@ -57,6 +57,6 @@ $ node couchpotato.js
 
 `/search ernest goes to`
 
-![Ernest 1](http://i.imgur.com/rkXQVIz.png)
+![Ernest 1](http://i.imgur.com/jgJFuCX.png)
 
 ![Ernest 2](http://i.imgur.com/lzi3h5d.png)
