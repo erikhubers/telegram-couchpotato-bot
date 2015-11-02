@@ -19,7 +19,6 @@ var couchpotato = new CouchPotatoAPI({
 	password: config.couchpotato.password
 });
 
-<<<<<<< HEAD
 /*
 search for movie name
  */
