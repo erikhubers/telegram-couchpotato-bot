@@ -55,17 +55,34 @@ $ node couchpotato.js
 
 **Add a movie :) send a message to the bot you created**
 
-`/search ernest goes to`
+`/s ernest goes to`
 
-![Ernest 1](http://i.imgur.com/jgJFuCX.png) ![Ernest 2](http://i.imgur.com/lzi3h5d.png)
+The bot will reply with
+
+```
+Found 5 movies:
+1) Ernest Goes to Camp - 1987 - 5.4/10 - 92m
+2) Ernest Goes to Jail - 1990 - 5.3/10 - 81m
+3) Ernest Goes to Africa - 1997 - 4.7/10 - 90m
+4) Ernest Goes to School - 1994 - 4.5/10 - 89m
+5) Ernest Goes to Splash Mountain - 1989 - 6.7/10 - 21m
+
+/m [number] to continue...
+```
+
+Finally the bot will ask you for the quality
+
+```
+1) SD 2) HD 3) Screener 4) R5 5) DVD-Rip 6) BR-Rip 7) 720p 8) 1080p 9) BR-Disk 10) DVD-R 11) TeleCine 12) TeleSync 13) Cam 
+
+/p [number] to continue...
+```
 
 ## Changelog
 
-### v0.1.2 *(coming soon)*
-- Added support for profiles (qualities)
-
 ### v0.1.1
-- Added support for `/profiles` command, more to come
+- Added support for profiles (qualities)
+- Completely overhauled the way to add movies
 
 ### v0.1.0
 - Initial release
