@@ -24,9 +24,7 @@ var couchpotato = new CouchPotatoAPI({
 search for movie name
  */
 bot.onText(/\/[sS]earch ([^\/p|P]+)\/{0,1}[p|P]{0,1}(.*)/, function (msg, match) {
-=======
-bot.onText(/\/[Ss]earch (.+)/, function (msg, match) {
->>>>>>> bc27024aad68cd2682f0d4b9b9d5d20ab9a755bc
+	
 	var chatId = msg.chat.id;
 	var movieName = match[1];
 	var profile = match[2] || '';
