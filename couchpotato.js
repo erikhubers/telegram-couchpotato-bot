@@ -2,6 +2,7 @@
 
 var CouchPotatoAPI = require('./lib/couchpotato-api');
 var TelegramBot = require('node-telegram-bot-api');
+var NodeCache = require( "node-cache" );
 var _ = require("lodash");
 
 var config = require('./config.json');
@@ -18,97 +19,168 @@ var couchpotato = new CouchPotatoAPI({
 	password: config.couchpotato.password
 });
 
-bot.onText(/\/[Ss]earch (.+)/, function (msg, match) {
-	var chatId = msg.chat.id;
-	var movieName = match[1];
+var cache = new NodeCache();
 
+bot.onText(/\/[Ss](earch)? (.+)/, function (msg, match) {
+	var messageId = msg.message_id;
+	var chatId = msg.chat.id;
+	var fromId = msg.from.id;
+	var movieName = match[2];
+
+	console.log('search: ' + fromId + ' requested to add a movie ' + movieName);
 	couchpotato.get("movie.search", { "q": movieName }).then(function (result) {
-		
-		console.log('search: sending ' + chatId + ' a request to add a movie ' + movieName);
-		
-		// create keyboard choices
-		var keyboardOpts = [];
-	    	_.forEach(result.movies, function(n, key) {
-			keyboardOpts.push(new Array('/add ' + n.original_title + ' (' + n.year + '/' + n.imdb + ')'));
-			if (key > 2) return false;
+		if (result.movies == undefined) {
+			throw new Error('could not find ' + movieName + ', try searching again');
+		}
+
+		return result.movies;
+	})
+	.then(function (movies) {
+		var movieList = [];
+		var response = ['*Found ' + movies.length + ' movies:*'];
+
+		_.forEach(movies, function(n, key) {
+			
+			var id = key + 1;
+	    	var title = n.original_title;
+	    	var year = ("year" in n ? n.year : '');
+	    	var rating = ("rating" in n ? ("imdb" in n.rating ? n.rating.imdb[0] + '/10' : '') : '');
+	    	var movieId = ("imdb" in n ? n.imdb : n.tmdb_id);
+	    	var thumb = ("images" in n ? ("poster" in n.images ? n.images.poster[0] : '') : '');
+	    	var runtime = ("runtime" in n ? n.runtime : '');
+	    	var onIMDb = ("via_imdb" in n ? true : false);
+
+			movieList.push({ 
+				"id": id,
+				"title": title, 
+				"year": year,
+				"rating": rating,
+				"movie_id": movieId,
+				"thumb": thumb,
+				"via_imdb": onIMDb
+			});
+			
+			response.push( 
+				'*' + id + '*) ' + 
+				(onIMDb ? '[' + title + '](http://imdb.com/title/' + movieId + ')' : '[' + title + '](https://www.themoviedb.org/movie/' + movieId + ')') +
+				(year ? ' - _' + year + '_' : '') + 
+				(rating ? ' - _' + rating + '_' : '') +
+				(runtime ? ' - _' + runtime + 'm_' : '')
+			);
 		});
 
+		response.push('\n`/m [number] to continue...`');
+
+	    // set cache
+		cache.set(fromId, movieList);
+
+		return response.join('\n');
+	})
+	.then(function(response) {
 		var opts = {
-			"reply_to_message_id": msg.message_id,
-			"disable_web_page_preview": true,	
-			"force_reply": true,
-			"resize_keyboard": false,
-			"one_time_keyboard": true,
+			"disable_web_page_preview": true,
+			"parse_mode": "Markdown",
 			"selective": 2,
-			"reply_markup": JSON.stringify({
-				"keyboard": keyboardOpts,
-			})
-	    	};
-	    	
-		bot.sendMessage(chatId, 'Choose a movie to add:', opts);
+	    };
+
+		bot.sendMessage(chatId, response, opts);
 	}).catch(function (err) {
-		console.log(err);
-		bot.sendMessage(chatId, 'search: error searching movie');
+		bot.sendMessage(chatId, "Oh no! " + err);
 	});
+
 });
 
-bot.onText(/\/add (.+)([\d]{4})\/(tt[\d]+)/, function (msg, match) {
+bot.onText(/\/[mM](ovie)? ([\d]{1})/, function (msg, match) {
+	var messageId = msg.message_id;
 	var chatId = msg.chat.id;
-	var movieName = match[1].slice(0,-2);
-	var movieYear = match[2];
-	var movieId = match[3];
+	var fromId = msg.from.id;
+	var movieId = match[2];
 
-	couchpotato.get("movie.add", { "identifier": movieId, "title": movieName }).then(function (result) {
-		
-		console.log('add: sending ' + chatId + ' a request to add ' + movieName + ' (' + movieId + ')');
-		
-		couchpotato.get("media.get", { "id": movieId }).then(function (result) {	
-			
-			var moviePoster = result.media.info.images.poster[0];
-			
-			console.log('add: sending ' + chatId + ' a poster ' + moviePoster);
-			
-			var opts = {
-				"parse_mode": "Markdown",
-				"reply_to_message_id": msg.message_id,
-				"one_time_keyboard": true,
-				"resize_keyboard": false,
-				"selective": 2,
-				//"force_reply": true,
-				"reply_markup": JSON.stringify({ "hide_keyboard": true })
-			};
+	// set movie option to cache
+	cache.set(fromId + 'm', movieId);
 
-			bot.sendMessage(chatId, '[Movie added!](' + moviePoster + ')', opts);
-		}).catch(function (err) {
-			console.log(err);
-			bot.sendMessage(chatId, 'add: error getting artwork');
-		});
-	
-	}).catch(function (err) {
-		console.log(err);
-		bot.sendMessage(chatId, 'add: error adding movie');
-	});
-});
-
-bot.onText(/\/[pP]rofiles/, function (msg) {
-	var chatId = msg.chat.id;
-
-	console.log('profiles: sending ' + chatId + ' a request get profile names');
-
+	console.log('movie: ' + fromId + ' requested to get profile list');
 	couchpotato.get("profile.list")
 	.then(function (result) {	
-		
-		var profileProfiles = [];
-		_.forEach(result.list, function(n, key) {
-			profileProfiles.push(n.label);
+		if (result.list == undefined) {
+			throw new Error("could not get profiles, try searching again");
+		}
+
+		if (cache.get(fromId) == undefined){
+			throw new Error("could not get previous movie list, try searching again");	  	
+		}
+
+		return result.list;
+	})
+	.then(function(profiles) {
+
+		var profileList = [];
+		var response = [];
+		_.forEach(profiles, function(n, key) {
+			profileList.push({ 
+				"id": key + 1,
+				"label": n.label, 
+				"hash": n._id
+			});
+
+			response.push('*' + (key + 1) + '*) ' + n.label);
 		});
 
-		bot.sendMessage(chatId, profileProfiles.join(', '));
-		
+		response.push('\n\n`/p [number] to continue...`');
+
+		// set cache
+		cache.set("profiles", profileList);
+
+		return response.join(' ');
+	})
+	.then(function(response) {
+		bot.sendMessage(chatId, response, { "selective": 2, "parse_mode": "Markdown" });
 	})
 	.catch(function (err) {
-		bot.sendMessage(chatId, 'profiles: error grabbing profiles');
-
-		throw new Error("could not get profiles: " + err);
+		bot.sendMessage(chatId, "Oh no! " + err);
 	});
+});
+
+bot.onText(/\/[pP](rofile)? ([\d]{1})/, function (msg, match) {
+	var messageId = msg.message_id;
+	var chatId = msg.chat.id;
+	var fromId = msg.from.id;
+	var profileId = match[2];
+	var profileList = cache.get("profiles");
+	var movieId = cache.get(fromId + 'm');
+	var movieList = cache.get(fromId);
+
+	if (profileList == undefined || movieList == undefined || movieId == undefined){
+		bot.sendMessage(chatId, 'Oh no! Error: something went wrong, try searching again'); 	
+	}
+
+	var movie = _.filter(movieList, function(item){
+	  	return item.id == movieId;
+	})[0];
+
+	var profile = _.filter(profileList, function(item){
+	  	return item.id == profileId;
+	})[0];
+
+	console.log('movie: ' + fromId + ' requested to get add the movie ' + movie.title);
+
+	couchpotato.get("movie.add", { "identifier": movie.movie_id, "title": movie.title, "profile_id": profile.hash })
+	.then(function (result) {
+		if (result.success == false) {
+			throw new Error("could not add movie, try searching again.");	
+		}
+	
+		bot.sendMessage(chatId, '[Movie added!](' + movie.thumb + ')', { "selective": 2, "parse_mode": "Markdown" });
+	})
+	.catch(function (err) {
+		bot.sendMessage(chatId, "Oh no! " + err);
+	})
+	.finally(function() {
+
+    	// delete cache items
+    	cache.del(fromId);
+		cache.del(fromId + 'm');
+		cache.del("profiles");
+  	});		
+
 });
