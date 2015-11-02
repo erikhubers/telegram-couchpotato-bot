@@ -4,7 +4,7 @@ Bot which lets you or others add movies to [CouchPotato](https://couchpota.to/).
 
 Contact [@BotFather](http://telegram.me/BotFather) on Telegram to get a bot token.
 
-## Usage
+## Setup
 
 Make sure you have node, npm, and git installed then
 
@@ -53,7 +53,9 @@ Please refer to the CouchPotato specific configuration below:
 $ node couchpotato.js
 ```
 
-**Add a movie :) send a message to the bot you created**
+## Usage
+
+Send the bot a message with the movie name
 
 `/s ernest goes to`
 
