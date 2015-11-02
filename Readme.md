@@ -55,17 +55,17 @@ $ node couchpotato.js
 
 **Add a movie :) send a message to the bot you created**
 
-`/search ernest goes to` or using a profile `/search ernest goes to /p 720p`
-
-get profile names by sending the bot a `/profiles` command
+`/search ernest goes to`
 
 ![Ernest 1](http://i.imgur.com/jgJFuCX.png) ![Ernest 2](http://i.imgur.com/lzi3h5d.png)
 
 ## Changelog
 
+### v0.1.2 *(coming soon)*
+- Added support for profiles (qualities)
+
 ### v0.1.1
-- Added support for profiles (qualities) and the /profiles switch to get their names
-- To speicify a profile just append a /p switch to /search like `/search ernest goes to /p dvd-rip`
+- Added support for `/profiles` command, more to come
 
 ### v0.1.0
 - Initial release
