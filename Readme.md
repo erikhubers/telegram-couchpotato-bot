@@ -85,6 +85,7 @@ Finally the bot will ask you for the quality
 ### v0.1.1
 - Added support for profiles (qualities)
 - Completely overhauled the way to add movies
+- Added short commands /s for search /m for movie and /p for profile you can still use long commands
 
 ### v0.1.0
 - Initial release
