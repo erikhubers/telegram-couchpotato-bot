@@ -1,8 +1,9 @@
 {
   "dependencies": {
-    "node-telegram-bot-api": "0.15.0",
     "bluebird": "^2.9.2",
-    "request": "^2.36.0",
-    "lodash": "^3.10.0"
+    "lodash": "^3.10.0",
+    "node-cache": "^3.0.0",
+    "node-telegram-bot-api": "0.15.0",
+    "request": "^2.36.0"
   }
 }
