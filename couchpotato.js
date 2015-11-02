@@ -89,3 +89,26 @@ bot.onText(/\/add (.+)([\d]{4})\/(tt[\d]+)/, function (msg, match) {
 		bot.sendMessage(chatId, 'add: error adding movie');
 	});
 });
+
+bot.onText(/\/[pP]rofiles/, function (msg) {
+	var chatId = msg.chat.id;
+
+	console.log('profiles: sending ' + chatId + ' a request get profile names');
+
+	couchpotato.get("profile.list")
+	.then(function (result) {	
+		
+		var profileProfiles = [];
+		_.forEach(result.list, function(n, key) {
+			profileProfiles.push(n.label);
+		});
+
+		bot.sendMessage(chatId, profileProfiles.join(', '));
+		
+	})
+	.catch(function (err) {
+		bot.sendMessage(chatId, 'profiles: error grabbing profiles');
+
+		throw new Error("could not get profiles: " + err);
+	});
+});
