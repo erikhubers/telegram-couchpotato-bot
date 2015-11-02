@@ -19,14 +19,19 @@ var couchpotato = new CouchPotatoAPI({
 	password: config.couchpotato.password
 });
 
-bot.onText(/\/[sS]earch (.+)(\s\/[qQ]\s.+)?/, function (msg, match) {
+/*
+search for movie name
+ */
+bot.onText(/\/[sS]earch ([^\/p|P]+)\/{0,1}[p|P]{0,1}(.*)/, function (msg, match) {
 	var chatId = msg.chat.id;
 	var movieName = match[1];
-	var quality = match[2] || '';
+	var profile = match[2] || '';
 
-	if (quality) {
-		quality = '/' + quality;
+	if (profile) {
+		profile = '/' + profile;
 	}
+
+	console.log('search: sending ' + chatId + ' a list of ' + movieName + ' matches');
 
 	couchpotato.get("movie.search", { "q": movieName })
 	.then(function (result) {
@@ -34,7 +39,7 @@ bot.onText(/\/[sS]earch (.+)(\s\/[qQ]\s.+)?/, function (msg, match) {
 		// create keyboard choices
 		var keyboardOpts = [];
 	    _.forEach(result.movies, function(n, key) {
-			keyboardOpts.push(new Array('/add ' + n.original_title + ' (' + n.year + '/' + n.imdb + quality + ')'));
+			keyboardOpts.push(new Array('/add ' + n.original_title + ' (' + n.year + '/' + n.imdb + profile + ')'));
 			if (key > 2) return false;
 		});
 
@@ -58,19 +63,22 @@ bot.onText(/\/[sS]earch (.+)(\s\/[qQ]\s.+)?/, function (msg, match) {
 	});
 });
 
+/*
+add movie
+ */
 bot.onText(/\/[aA]dd (.+)([\d]{4})\/(tt[\d]+)\/?(.+)?\)/, function (msg, match) {
 	var chatId = msg.chat.id;
 	var movieName = match[1].slice(0,-2);
 	var movieYear = match[2];
 	var movieId = match[3];
-	var qualityName = match[4] || '';
+	var profileName = match[4] || '';
 
 	console.log('add: sending ' + chatId + ' a request to add ' + movieName + ' (' + movieId + ')');
 
 	// send the request
-	Bluebird.join(_getQuality(qualityName), _getThumbUrl(movieId), function(quality, thumb) {
+	Bluebird.join(_getProfile(profileName), _getThumbUrl(movieId), function(profile, thumb) {
 
-		couchpotato.get("movie.add", { "identifier": movieId, "title": movieName, "profile_id": quality[0]._id })
+		couchpotato.get("movie.add", { "identifier": movieId, "title": movieName, "profile_id": profile[0]._id })
 		.then(function (result) {
 
 	    	var opts = {
@@ -99,16 +107,41 @@ bot.onText(/\/[aA]dd (.+)([\d]{4})\/(tt[\d]+)\/?(.+)?\)/, function (msg, match) 
 });
 
 /*
-get profile_id by name
-return promise[list]
+get profile names
  */
-var _getQuality = function (qualityName) {
+bot.onText(/\/[pP]rofiles/, function (msg) {
+	var chatId = msg.chat.id;
+
+	console.log('profiles: sending ' + chatId + ' a request get profile names');
+
+	couchpotato.get("profile.list")
+	.then(function (result) {	
+		
+		var profileProfiles = [];
+		_.forEach(result.list, function(n, key) {
+			profileProfiles.push(n.label);
+		});
+
+		bot.sendMessage(chatId, profileProfiles.join(', '));
+		
+	})
+	.catch(function (err) {
+		bot.sendMessage(chatId, 'profiles: error grabbing profiles');
+
+		throw new Error("could not get profiles: " + err);
+	});
+});
+
+/*
+get profile_id by name
+ */
+var _getProfile = function (profileName) {
 	return couchpotato.get("profile.list")
 	.then(function (result) {	
-		if (qualityName) {
-			console.log('add: found profile_id for ' + qualityName);
+		if (profileName) {
+			console.log('add: found profile_id for ' + profileName);
 			return  _.filter(result.list, function(item){
-	  			return item.label.match(new RegExp(qualityName, 'i'));
+	  			return item.label.match(new RegExp(profileName, 'i'));
 			});
 		} else {
 			return Object.keys(result.list)[0];
@@ -120,8 +153,7 @@ var _getQuality = function (qualityName) {
 };
 
 /*
-get thumbnail address
-return promise[string]
+get thumbnail link
  */
 var _getThumbUrl = function (movieId) {
 	return couchpotato.get("media.get", { "id": movieId })
