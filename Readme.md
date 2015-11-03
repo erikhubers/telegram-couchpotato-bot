@@ -6,16 +6,16 @@ Contact [@BotFather](http://telegram.me/BotFather) on Telegram to get a bot toke
 
 ## Setup
 
-Make sure you have node, npm, and git installed then
+Make sure you have node, npm, and git installed then in shell / command prompt
 
 **Clone the repo**
 ```bash 
-$ git clone https://github.com/onedr0p/telegram-couchpotato-bot
+git clone https://github.com/onedr0p/telegram-couchpotato-bot
 ```
 
 **Install the dependencies**
 ```bash 
-$ cd telegram-couchpotato-bot && npm install
+cd telegram-couchpotato-bot && npm install
 ```
 
 Then create the file **config.json** in the root folder (alongside couchpotato.js) with your configuration values
