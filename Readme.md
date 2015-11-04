@@ -2,7 +2,9 @@
 
 Bot which lets you or others add movies to [CouchPotato](https://couchpota.to/).
 
-Contact [@BotFather](http://telegram.me/BotFather) on Telegram to get a bot token.
+Contact [@BotFather](http://telegram.me/BotFather) on Telegram to create and get a bot token.
+
+For now, please make your bot username something unique. For example @fred_flintstones_stonepotato or something
 
 ## Setup
 
