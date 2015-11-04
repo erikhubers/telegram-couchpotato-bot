@@ -1,3 +1,4 @@
+/*jslint node: true */
 'use strict';
 
 var CouchPotatoAPI = require('./lib/couchpotato-api');
@@ -23,6 +24,37 @@ var couchpotato = new CouchPotatoAPI({
 
 var cache = new NodeCache();
 
+/*
+get the bot name
+ */
+bot.getMe().then(function (msg) {
+  console.log('Welcome to the couchpotato bot %s!', msg.username);
+}).catch(function (err) {
+    throw new Error(err);
+});
+
+/*
+handle start command
+ */
+bot.onText(/\/start/, function(msg) {
+    var chatId = msg.chat.id;
+    var username = msg.from.username || msg.from.first_name;
+
+    var response = [];
+
+    response.push('Hello ' + username, 'welcome to your CouchPotato bot!');
+    response.push('\n`/s [movie name] to continue...`');
+
+    var opts = {
+        "parse_mode": "Markdown",
+        "selective": 2,
+    };
+
+    bot.sendMessage(chatId, response.join('\n'), opts);
+});
+/*
+handle search command
+ */
 bot.onText(/\/[Ss](earch)? (.+)/, function(msg, match) {
     var messageId = msg.message_id;
     var chatId = msg.chat.id;
@@ -33,7 +65,7 @@ bot.onText(/\/[Ss](earch)? (.+)/, function(msg, match) {
     couchpotato.get("movie.search", {
             "q": movieName
         }).then(function(result) {
-            if (result.movies == undefined) {
+            if (result.movies === undefined) {
                 throw new Error('could not find ' + movieName + ', try searching again');
             }
 
@@ -94,6 +126,9 @@ bot.onText(/\/[Ss](earch)? (.+)/, function(msg, match) {
 
 });
 
+/*
+handle movie command
+ */
 bot.onText(/\/[mM](ovie)? ([\d]{1})/, function(msg, match) {
     var messageId = msg.message_id;
     var chatId = msg.chat.id;
@@ -106,11 +141,11 @@ bot.onText(/\/[mM](ovie)? ([\d]{1})/, function(msg, match) {
     console.log('movie: ' + fromId + ' requested to get profile list');
     couchpotato.get("profile.list")
         .then(function(result) {
-            if (result.list == undefined) {
+            if (result.list === undefined) {
                 throw new Error("could not get profiles, try searching again");
             }
 
-            if (cache.get(fromId) == undefined) {
+            if (cache.get(fromId) === undefined) {
                 throw new Error("could not get previous movie list, try searching again");
             }
 
@@ -148,6 +183,9 @@ bot.onText(/\/[mM](ovie)? ([\d]{1})/, function(msg, match) {
         });
 });
 
+/*
+handle quality profile command
+ */
 bot.onText(/\/[pP](rofile)? ([\d]{1})/, function(msg, match) {
     var messageId = msg.message_id;
     var chatId = msg.chat.id;
@@ -157,7 +195,7 @@ bot.onText(/\/[pP](rofile)? ([\d]{1})/, function(msg, match) {
     var movieId = cache.get(fromId + 'm');
     var movieList = cache.get(fromId);
 
-    if (profileList == undefined || movieList == undefined || movieId == undefined) {
+    if (profileList === undefined || movieList === undefined || movieId === undefined) {
         bot.sendMessage(chatId, 'Oh no! Error: something went wrong, try searching again');
     }
 
@@ -177,7 +215,7 @@ bot.onText(/\/[pP](rofile)? ([\d]{1})/, function(msg, match) {
             "profile_id": profile.hash
         })
         .then(function(result) {
-            if (result.success == false) {
+            if (result.success === false) {
                 throw new Error("could not add movie, try searching again.");
             }
 
