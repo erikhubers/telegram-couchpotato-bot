@@ -4,19 +4,19 @@ Bot which lets you or others add movies to [CouchPotato](https://couchpota.to/).
 
 Contact [@BotFather](http://telegram.me/BotFather) on Telegram to create and get a bot token.
 
-For now, please make your bot username something unique. For example @fred_flintstones_stonepotato or something
+For now, please make your bot username something unique. For example @fred-flintstone-stonepotato-bot or something
 
 ## Setup
 
 Make sure you have node, npm, and git installed then in shell / command prompt
 
 **Clone the repo**
-```bash 
+```bash
 git clone https://github.com/onedr0p/telegram-couchpotato-bot
 ```
 
 **Install the dependencies**
-```bash 
+```bash
 cd telegram-couchpotato-bot && npm install
 ```
 
@@ -28,10 +28,10 @@ Then create the file **config.json** in the root folder (alongside couchpotato.j
 		"botToken": ""
 	},
 	"couchpotato": {
-		"hostname": "", 
+		"hostname": "",
 		"apiKey": "",
-		"port": 5050, 
-		"urlBase": "", 
+		"port": 5050,
+		"urlBase": "",
 		"ssl": false,
 		"username": "",
 		"password": ""
@@ -77,7 +77,7 @@ Found 5 movies:
 Finally the bot will ask you for the quality
 
 ```
-1) SD 2) HD 3) Screener 4) R5 5) DVD-Rip 6) BR-Rip 7) 720p 8) 1080p 9) BR-Disk 10) DVD-R 11) TeleCine 12) TeleSync 13) Cam 
+1) SD 2) HD 3) Screener 4) R5 5) DVD-Rip 6) BR-Rip 7) 720p 8) 1080p 9) BR-Disk 10) DVD-R 11) TeleCine 12) TeleSync 13) Cam
 
 /p [number] to continue...
 ```
