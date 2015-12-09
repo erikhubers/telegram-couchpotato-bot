@@ -20,24 +20,7 @@ git clone https://github.com/onedr0p/telegram-couchpotato-bot
 cd telegram-couchpotato-bot && npm install
 ```
 
-Then create the file **config.json** in the root folder (alongside couchpotato.js) with your configuration values
-
-```javascript
-{
-	"telegram": {
-		"botToken": ""
-	},
-	"couchpotato": {
-		"hostname": "",
-		"apiKey": "",
-		"port": 5050,
-		"urlBase": "",
-		"ssl": false,
-		"username": "",
-		"password": ""
-	}
-}
-```
+Then move `config.json.template` to `config.json` and fill in the values.
 
 Please refer to the CouchPotato specific configuration below:
 
@@ -83,6 +66,10 @@ Finally the bot will ask you for the quality
 ```
 
 ## Changelog
+
+### v0.1.2
+- Updated couchpotato lib
+- Added config template to project
 
 ### v0.1.1
 - Added support for profiles (qualities)
