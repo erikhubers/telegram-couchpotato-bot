@@ -12,12 +12,13 @@ Make sure you have node, npm, and git installed then in shell / command prompt
 
 **Clone the repo**
 ```bash
-git clone https://github.com/onedr0p/telegram-couchpotato-bot
+$ git clone https://github.com/onedr0p/telegram-couchpotato-bot
 ```
 
 **Install the dependencies**
 ```bash
-cd telegram-couchpotato-bot && npm install
+$ cd telegram-couchpotato-bot
+$ npm install
 ```
 
 Then move `config.json.template` to `config.json` and fill in the values.
@@ -27,10 +28,10 @@ Please refer to the CouchPotato specific configuration below:
 - **hostname**: hostname where CouchPotato runs (required)
 - **apiKey**: Your API to access CouchPotato (required)
 - **port**: port number CouchPotato is listening on (optional, default: 5050)
-- **urlBase**: URL Base of CouchPotato (optional, default: null)
+- **urlBase**: URL Base of CouchPotato (optional, default: empty)
 - **ssl**: Set to true if you are connecting via SSL (default: false)
-- **username**: HTTP Auth username (default: null)
-- **password**: HTTP Auth password (default: null)
+- **username**: HTTP Auth username (default: empty)
+- **password**: HTTP Auth password (default: empty)
 
 
 **Start the bot with node, forever, pm2 or w/e**
