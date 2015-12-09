@@ -1,0 +1,14 @@
+{
+	"telegram": {
+		"botToken": ""
+	},
+	"couchpotato": {
+		"hostname": "", 
+		"apiKey": "",
+		"port": 5050, 
+		"urlBase": "", 
+		"ssl": false,
+		"username": "",
+		"password": ""
+	}
+}
