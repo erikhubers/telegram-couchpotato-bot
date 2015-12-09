@@ -57,6 +57,12 @@ Found 5 movies:
 /m [number] to continue...
 ```
 
+Send the number of the movie you want with the /m flag
+
+```
+/m 1
+```
+
 Finally the bot will ask you for the quality
 
 ```
@@ -64,6 +70,14 @@ Finally the bot will ask you for the quality
 
 /p [number] to continue...
 ```
+
+Send the number of the profile
+
+```
+/p 1
+```
+
+If everything goes well, you'll see a text from the bot saying the movie was added.
 
 ## Changelog
 
