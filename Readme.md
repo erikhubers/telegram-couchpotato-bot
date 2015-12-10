@@ -43,7 +43,7 @@ $ node couchpotato.js
 
 Send the bot a message with the movie name
 
-`/s ernest goes to`
+`/q ernest goes to`
 
 The bot will reply with
 
@@ -82,6 +82,11 @@ If everything goes well, you'll see a text from the bot saying the movie was add
 
 ## Changelog
 
+### v0.1.3
+- Change /s flag to /q (/query) flag
+- Updated cache keys
+- Added count of profiles to reponse
+
 ### v0.1.2
 - Updated couchpotato lib
 - Added config template to project
@@ -97,7 +102,7 @@ If everything goes well, you'll see a text from the bot saying the movie was add
 ## License
 (The MIT License)
 
-Copyright (c) 2015 Devin Buhl &lt;devin.kray@gmail.com&gt;
+Copyright (c) 2015 Devin Buhl <devin.kray@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

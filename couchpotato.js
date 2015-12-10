@@ -42,8 +42,8 @@ bot.onText(/\/start/, function(msg) {
 
   var response = [];
 
-  response.push('Hello ' + username + ', use /s to search');
-  response.push('\n`/s [movie] to continue...`');
+  response.push('Hello ' + username + ', use /q to search');
+  response.push('\n`/q [movie name]` to continue...');
 
   var opts = {
     "parse_mode": "Markdown",
@@ -54,9 +54,9 @@ bot.onText(/\/start/, function(msg) {
 });
 
 /*
-handle search command
+handle query command
  */
-bot.onText(/\/[Ss](earch)? (.+)/, function(msg, match) {
+bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
   var messageId = msg.message_id;
   var chatId = msg.chat.id;
   var fromId = msg.from.id;
@@ -107,10 +107,10 @@ bot.onText(/\/[Ss](earch)? (.+)/, function(msg, match) {
         );
       });
 
-      response.push('\n`/m [number] to continue...`');
+      response.push('\n`/m [n]` to continue...');
 
       // set cache
-      cache.set(fromId, movieList);
+      cache.set("movieList" + fromId, movieList);
 
       return response.join('\n');
     })
@@ -138,7 +138,7 @@ bot.onText(/\/[mM](ovie)? ([\d]{1})/, function(msg, match) {
   var movieId = match[2];
 
   // set movie option to cache
-  cache.set(fromId + 'm', movieId);
+  cache.set("movieId" + fromId, movieId);
 
   couchpotato.get("profile.list")
     .then(function(result) {
@@ -146,7 +146,7 @@ bot.onText(/\/[mM](ovie)? ([\d]{1})/, function(msg, match) {
         throw new Error("could not get profiles, try searching again");
       }
 
-      if (cache.get(fromId) === undefined) {
+      if (cache.get("movieList" + fromId) === undefined) {
         throw new Error("could not get previous movie list, try searching again");
       }
 
@@ -156,7 +156,7 @@ bot.onText(/\/[mM](ovie)? ([\d]{1})/, function(msg, match) {
       console.log(fromId + ' requested to get profiles list');
 
       var profileList = [];
-      var response = [];
+      var response = ['*Found ' + profiles.length + ' profiles:*\n'];
       _.forEach(profiles, function(n, key) {
         profileList.push({
           "id": key + 1,
@@ -167,10 +167,10 @@ bot.onText(/\/[mM](ovie)? ([\d]{1})/, function(msg, match) {
         response.push('*' + (key + 1) + '*) ' + n.label);
       });
 
-      response.push('\n\n`/p [number] to continue...`');
+      response.push('\n\n`/p [n]` to continue...');
 
       // set cache
-      cache.set("profiles", profileList);
+      cache.set("movieProfileList" + fromId, profileList);
 
       return response.join(' ');
     })
@@ -193,9 +193,9 @@ bot.onText(/\/[pP](rofile)? ([\d]{1})/, function(msg, match) {
   var chatId = msg.chat.id;
   var fromId = msg.from.id;
   var profileId = match[2];
-  var profileList = cache.get("profiles");
-  var movieId = cache.get(fromId + 'm');
-  var movieList = cache.get(fromId);
+  var profileList = cache.get("movieProfileList" + fromId);
+  var movieId = cache.get("movieId" + fromId);
+  var movieList = cache.get("movieList" + fromId);
 
   if (profileList === undefined || movieList === undefined || movieId === undefined) {
     bot.sendMessage(chatId, 'Oh no! Error: something went wrong, try searching again');
@@ -208,8 +208,6 @@ bot.onText(/\/[pP](rofile)? ([\d]{1})/, function(msg, match) {
   var profile = _.filter(profileList, function(item) {
     return item.id == profileId;
   })[0];
-
-
 
   couchpotato.get("movie.add", {
       "identifier": movie.movie_id,
@@ -235,9 +233,9 @@ bot.onText(/\/[pP](rofile)? ([\d]{1})/, function(msg, match) {
     .finally(function() {
 
       // delete cache items
-      cache.del(fromId);
-      cache.del(fromId + 'm');
-      cache.del("profiles");
+      cache.del("movieList" + fromId);
+      cache.del("movieId" + fromId);
+      cache.del("movieProfileList" + fromId);
     });
 
 });
