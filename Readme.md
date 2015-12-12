@@ -38,10 +38,9 @@ Please refer to the CouchPotato specific configuration below:
 - **username**: HTTP Auth username (default: empty)
 - **password**: HTTP Auth password (default: empty)
 
-
-**Start the bot with node, forever, pm2 or w/e**
 ```bash
-$ node couchpotato.js
+# Start the bot
+node couchpotato.js
 ```
 
 ### Usage
