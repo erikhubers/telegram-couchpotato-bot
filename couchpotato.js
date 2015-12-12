@@ -5,20 +5,26 @@ var TelegramBot = require('node-telegram-bot-api');
 var NodeCache = require("node-cache");
 var _ = require("lodash");
 
-var config = require('./config.json');
+try {
+  var config = require('./config.json');
+} catch(e) {
+  var config = {};
+  config.telegram = {};
+  config.couchpotato = {};
+}
 
-var bot = new TelegramBot(config.telegram.botToken, {
+var bot = new TelegramBot(process.env.TELEGRAM_BOTTOKEN || config.telegram.botToken, {
   polling: true
 });
 
 var couchpotato = new CouchPotatoAPI({
-  hostname: config.couchpotato.hostname,
-  apiKey: config.couchpotato.apiKey,
-  port: config.couchpotato.port,
-  urlBase: config.couchpotato.urlBase,
-  ssl: config.couchpotato.ssl,
-  username: config.couchpotato.username,
-  password: config.couchpotato.password
+  hostname: process.env.COUCHPOTATO_HOST || config.couchpotato.hostname,
+  apiKey: process.env.COUCHPOTATO_APIKEY || config.couchpotato.apiKey,
+  port: process.env.COUCHPOTATO_PORT || config.couchpotato.port || 5050,
+  urlBase: process.env.COUCHPOTATO_URLBASE || config.couchpotato.urlBase,
+  ssl: process.env.COUCHPOTATO_SSL || config.couchpotato.ssl,
+  username: process.env.COUCHPOTATO_USERNAME || config.couchpotato.username,
+  password: process.env.COUCHPOTATO_PASSWORD || config.couchpotato.password
 });
 
 var cache = new NodeCache();
