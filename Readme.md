@@ -1,27 +1,32 @@
 # telegram-couchpotato-bot
 
-Bot which lets you or others add movies to [CouchPotato](https://couchpota.to/).
+Bot which lets you or others add movies to [CouchPotato](https://couchpota.to/) via the messaging service [Telegram](https://telegram.org/).
 
 Contact [@BotFather](http://telegram.me/BotFather) on Telegram to create and get a bot token.
 
 For now, please make your bot username something unique. For example @fred-flintstone-stonepotato-bot or something
 
-## Setup
+Getting Started
+---------------
 
-Make sure you have node, npm, and git installed then in shell / command prompt
+### Prerequisites
+- [Node.js](http://nodejs.org)
+- [Git](https://git-scm.com/downloads) (optional)
 
-**Clone the repo**
+### Installation
+
 ```bash
-$ git clone https://github.com/onedr0p/telegram-couchpotato-bot
+# Clone the repository
+git clone https://github.com/onedr0p/telegram-couchpotato-bot
 ```
 
-**Install the dependencies**
 ```bash
-$ cd telegram-couchpotato-bot
-$ npm install
+# Install dependencies
+cd telegram-couchpotato-bot
+npm install
 ```
 
-Then move `config.json.template` to `config.json` and fill in the values.
+Then copy `config.json.template` to `config.json` and fill in the values.
 
 Please refer to the CouchPotato specific configuration below:
 
@@ -39,7 +44,7 @@ Please refer to the CouchPotato specific configuration below:
 $ node couchpotato.js
 ```
 
-## Usage
+### Usage
 
 Send the bot a message with the movie name
 
@@ -80,26 +85,32 @@ Send the number of the profile
 
 If everything goes well, you'll see a text from the bot saying the movie was added.
 
-## Changelog
+### Changelog
 
-### v0.1.3
+#### v0.1.4
+- Added docker support
+- Fixed domain names no verifying
+- Updated Readme.md
+- Thanks @danielcbaldwin
+
+#### v0.1.3
 - Change /s flag to /q (/query) flag
 - Updated cache keys
 - Added count of profiles to reponse
 
-### v0.1.2
+#### v0.1.2
 - Updated couchpotato lib
 - Added config template to project
 
-### v0.1.1
+#### v0.1.1
 - Added support for profiles (qualities)
 - Completely overhauled the way to add movies
 - Added short commands /s for search /m for movie and /p for profile you can still use long commands
 
-### v0.1.0
+#### v0.1.0
 - Initial release
 
-## License
+### License
 (The MIT License)
 
 Copyright (c) 2015 Devin Buhl <devin.kray@gmail.com>
