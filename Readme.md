@@ -46,7 +46,7 @@ node couchpotato.js
 ### Docker
 Alternatively you may use Docker to start the bot
 ```
-docker run --rm -it \
+docker run --name telegram-couchpotato-bot \
   -e TELEGRAM_BOTTOKEN=
   -e COUCHPOTATO_HOST=
   -e COUCHPOTATO_APIKEY=
