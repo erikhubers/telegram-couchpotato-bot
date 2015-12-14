@@ -7,7 +7,7 @@ var _ = require("lodash");
 
 try {
   var config = require('./config.json');
-} catch(e) {
+} catch (e) {
   var config = {};
   config.telegram = {};
   config.couchpotato = {};
