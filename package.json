@@ -1,9 +1,22 @@
 {
+  "name": "telegram-couchpotato-bot",
+  "version": "0.1.4",
+  "description": "A Telegram bot to interact with your CouchPotato Web App",
   "dependencies": {
     "bluebird": "^2.9.2",
     "lodash": "^3.10.0",
     "node-cache": "^3.0.0",
     "node-telegram-bot-api": "^0.17.0",
     "request": "^2.36.0"
-  }
+  },
+  "repository": "git://github.com/onedr0p/telegram-couchpotato-bot",
+  "keywords": [
+    "couchpotato",
+    "telegram"
+  ],
+  "engines": {
+    "node": ">=0.10"
+  },
+  "author": "Devin Buhl <devin.kray@gmail.com>",
+  "license": "MIT"
 }
