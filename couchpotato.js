@@ -209,11 +209,11 @@ bot.onText(/\/[pP](rofile)? ([\d]+)/, function(msg, match) {
   }
 
   var movie = _.filter(movieList, function(item) {
-    return item.id === movieId;
+    return item.id == movieId;
   })[0];
 
   var profile = _.filter(profileList, function(item) {
-    return item.id === profileId;
+    return item.id == profileId;
   })[0];
 
   couchpotato.get('movie.add', {
