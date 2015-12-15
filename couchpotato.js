@@ -138,7 +138,7 @@ bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
 /*
 handle movie command
  */
-bot.onText(/\/[mM](ovie)? ([\d]{1})/, function(msg, match) {
+bot.onText(/\/[mM](ovie)? ([\d]+)/, function(msg, match) {
   var messageId = msg.message_id;
   var chatId = msg.chat.id;
   var fromId = msg.from.id;
@@ -195,7 +195,7 @@ bot.onText(/\/[mM](ovie)? ([\d]{1})/, function(msg, match) {
 /*
 handle quality profile command
  */
-bot.onText(/\/[pP](rofile)? ([\d]{1})/, function(msg, match) {
+bot.onText(/\/[pP](rofile)? ([\d]+)/, function(msg, match) {
   var messageId = msg.message_id;
   var chatId = msg.chat.id;
   var fromId = msg.from.id;
