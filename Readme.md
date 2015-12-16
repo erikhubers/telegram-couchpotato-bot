@@ -58,6 +58,8 @@ docker run --name telegram-couchpotato-bot \
   telegram-couchpotato-bot
 ```
 
+**Prebuilt** Docker image for this bot can be found [here](https://hub.docker.com/r/subzero79/docker-telegram-couchpotato-bot), thanks [@subzero79](https://github.com/subzero79)
+
 ### Usage
 
 Send the bot a message with the movie name
