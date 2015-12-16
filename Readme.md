@@ -101,6 +101,10 @@ If everything goes well, you'll see a text from the bot saying the movie was add
 
 ### Changelog
 
+#### v0.1.5
+- CouchPotato lib is now on npm (you will need to run npm install if you are upgrading)
+- Updated a few dev things
+
 #### v0.1.4
 - Added docker support
 - Fixed domain names no verifying
