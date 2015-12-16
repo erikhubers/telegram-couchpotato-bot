@@ -1,6 +1,6 @@
 'use strict';
 
-var CouchPotatoAPI = require('./lib/couchpotato-api');
+var CouchPotatoAPI = require('couchpotato-api');
 var TelegramBot = require('node-telegram-bot-api');
 var NodeCache = require('node-cache');
 var _ = require('lodash');
