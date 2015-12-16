@@ -64,7 +64,6 @@ bot.onText(/\/start/, function(msg) {
 handle query command
  */
 bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
-  var messageId = msg.message_id;
   var chatId = msg.chat.id;
   var fromId = msg.from.id;
   var movieName = match[2];
@@ -139,7 +138,6 @@ bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
 handle movie command
  */
 bot.onText(/\/[mM](ovie)? ([\d]+)/, function(msg, match) {
-  var messageId = msg.message_id;
   var chatId = msg.chat.id;
   var fromId = msg.from.id;
   var movieId = match[2];
@@ -196,7 +194,6 @@ bot.onText(/\/[mM](ovie)? ([\d]+)/, function(msg, match) {
 handle quality profile command
  */
 bot.onText(/\/[pP](rofile)? ([\d]+)/, function(msg, match) {
-  var messageId = msg.message_id;
   var chatId = msg.chat.id;
   var fromId = msg.from.id;
   var profileId = match[2];
@@ -244,5 +241,33 @@ bot.onText(/\/[pP](rofile)? ([\d]+)/, function(msg, match) {
       cache.del('movieId' + fromId);
       cache.del('movieProfileList' + fromId);
     });
+});
 
+/*
+ * handle full search of movies
+ */
+bot.onText(/\/searchwanted/, function(msg) {
+  var chatId = msg.chat.id;
+  var fromId = msg.from.id;
+
+  couchpotato.get('movie.searcher.full_search')
+    .then(function(result) {
+      bot.sendMessage(chatId, 'Starting full search for all wanted movies.');
+    }).catch(function(err) {
+      bot.sendMessage(chatId, 'Oh no! ' + err);
+    });
+});
+
+/*
+ * handle clear command
+ */
+bot.onText(/\/clear/, function(msg) {
+  var chatId = msg.chat.id;
+  var fromId = msg.from.id;
+
+  cache.del('movieList' + fromId);
+  cache.del('movieId' + fromId);
+  cache.del('movieProfileList' + fromId);
+
+  bot.sendMessage(chatId, 'All previously sent commands have been cleared, yey!');
 });

@@ -103,6 +103,11 @@ If everything goes well, you'll see a text from the bot saying the movie was add
 
 ### Changelog
 
+#### v0.1.6
+- Added command `/searchwanted` for searching for all wanted movies
+- Added command `/clear` to wipe all previous commands chain
+- More housekeeping
+
 #### v0.1.5
 - CouchPotato lib is now on npm (you will need to run npm install if you are upgrading)
 - Updated a few dev things
