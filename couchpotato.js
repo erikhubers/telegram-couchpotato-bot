@@ -305,7 +305,11 @@ bot.onText(/\/clear/, function(msg) {
   cache.del('movieId' + fromId);
   cache.del('movieProfileList' + fromId);
 
-  bot.sendMessage(chatId, 'All previously sent commands have been cleared, yey!');
+  bot.sendMessage(chatId, 'All previously sent commands have been cleared, yey!', {
+    'reply_markup': {
+      'hide_keyboard': true
+    }
+  });
 });
 
 /*
