@@ -75,29 +75,17 @@ Found 5 movies:
 3) Ernest Goes to Africa - 1997 - 4.7/10 - 90m
 4) Ernest Goes to School - 1994 - 4.5/10 - 89m
 5) Ernest Goes to Splash Mountain - 1989 - 6.7/10 - 21m
-
-/m [number] to continue...
 ```
 
-Send the number of the movie you want with the /m flag
+Use the custom keyboard to select the movie.
+
+The bot will then ask you for the quality
 
 ```
-/m 1
+A) SD B) HD C) Screener D) R5 E) DVD-Rip F) BR-Rip G) 720p H) 1080p I) BR-Disk J) DVD-R K) TeleCine L) TeleSync M) Cam
 ```
 
-Finally the bot will ask you for the quality
-
-```
-1) SD 2) HD 3) Screener 4) R5 5) DVD-Rip 6) BR-Rip 7) 720p 8) 1080p 9) BR-Disk 10) DVD-R 11) TeleCine 12) TeleSync 13) Cam
-
-/p [number] to continue...
-```
-
-Send the number of the profile
-
-```
-/p 1
-```
+Send the profile using the custom keyboard
 
 If everything goes well, you'll see a text from the bot saying the movie was added.
 
