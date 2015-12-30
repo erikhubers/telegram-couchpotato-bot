@@ -91,6 +91,9 @@ If everything goes well, you'll see a text from the bot saying the movie was add
 
 ### Changelog
 
+#### v0.1.7
+- Added custom keyboard, thanks @bybeet
+
 #### v0.1.6
 - Added command `/searchwanted` for searching for all wanted movies
 - Added command `/clear` to wipe all previous commands chain
