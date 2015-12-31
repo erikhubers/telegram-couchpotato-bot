@@ -84,7 +84,7 @@ Use the custom keyboard to select the movie.
 The bot will then ask you for the quality
 
 ```
-1) SD 2) HD 3) Screener 4) R5 5) DVD-Rip 6) BR-Rip 7) 720p 8) 1080p 9) BR-Disk 10) DVD-R 11) TeleCine 12) TeleSync 13) Cam
+1) Any 2) Screener 3) DVD-Rip 4) BR-Rip 5) 720p 6) 1080p
 ```
 
 Send the profile using the custom keyboard
