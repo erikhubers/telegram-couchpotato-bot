@@ -91,6 +91,10 @@ If everything goes well, you'll see a text from the bot saying the movie was add
 
 ### Changelog
 
+#### v0.1.8
+- Quality Profiles options only display ones that are enabled in CouchPotato
+- More Housekeeping
+
 #### v0.1.7
 - Added custom keyboard, thanks @bybeet
 

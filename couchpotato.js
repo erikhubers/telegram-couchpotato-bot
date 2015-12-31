@@ -105,7 +105,7 @@ bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
         var thumb = ('images' in n ? ('poster' in n.images ? n.images.poster[0] : '') : '');
         var runtime = ('runtime' in n ? n.runtime : '');
         var onIMDb = ('via_imdb' in n ? true : false);
-        var keyboardValue = title + (year ? ' - ' + year : '')
+        var keyboardValue = title + (year ? ' - ' + year : '');
 
         movieList.push({
           'id': id,
@@ -129,7 +129,7 @@ bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
         keyboardList.push(
           // One movie per row of custom keyboard
           [keyboardValue]
-        )
+        );
       });
 
       // set cache
@@ -152,7 +152,7 @@ bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
       bot.sendMessage(chatId, response.message, opts);
     })
     .catch(function(err) {
-      replyWithError(chatId, err)
+      replyWithError(chatId, err);
     });
 
 });
@@ -167,9 +167,9 @@ bot.on('message', function(msg) {
   // If the message is a command, ignore it.
   if(msg.text[0] != '/') {
     // Check cache to determine state, if cache empty prompt user to start a movie search
-    var currentState = cache.get('state' + fromId)
+    var currentState = cache.get('state' + fromId);
     if (currentState === undefined) {
-      replyWithError(chatId, new Error('Try searching for a movie first with `/q movie name`'))
+      replyWithError(chatId, new Error('Try searching for a movie first with `/q movie name`'));
     } else {
       switch(currentState) {
         case state.MOVIE:
@@ -181,7 +181,7 @@ bot.on('message', function(msg) {
           handleProfile(chatId, fromId, profileName);
           break;
         default:
-          replyWithError(chatId, new Error("Unsure what's going on, use the `/clear` command and start over."));
+          replyWithError(chatId, new Error('Unsure what\'s going on, use the `/clear` command and start over.'));
       }
     }
   }
@@ -222,15 +222,23 @@ function handleMovie(chatId, fromId, movieDisplayName) {
       var profileList = [];
       var keyboardList = [];
       var keyboardRow = [];
-      var response = ['*Found ' + profiles.length + ' profiles:*\n'];
-      _.forEach(profiles, function(n, key) {
+
+      // only select profiles that are enabled in CP
+      var enabledProfiles = _.filter(profiles, function(item) {
+        return item.hide === false;
+      });
+
+      var response = ['*Found ' + enabledProfiles.length + ' profiles:*\n'];
+
+      _.forEach(enabledProfiles, function(n, key) {
         profileList.push({
           'id': key,
           'label': n.label,
           'hash': n._id
         });
+
         // Keep profile id as an integer, convert to char for display
-        var keyAsChar = String.fromCharCode("A".charCodeAt(0) + key);
+        var keyAsChar = String.fromCharCode('A'.charCodeAt(0) + key);
 
         response.push('*' + (key + 1) + '*) ' + n.label);
 
@@ -260,7 +268,7 @@ function handleMovie(chatId, fromId, movieDisplayName) {
       });
     })
     .catch(function(err) {
-      replyWithError(chatId, err)
+      replyWithError(chatId, err);
     });
 }
 
@@ -278,7 +286,8 @@ function handleProfile(chatId, fromId, profileName) {
   if(profile === undefined){
     replyWithError(chatId, new Error('Could not find the profile "' + profileName + '"'));
   }
-  var profileId = profile.id
+
+  var profileId = profile.id;
 
   var movie = _.filter(movieList, function(item) {
     return item.id == movieId;
@@ -348,7 +357,7 @@ bot.onText(/\/clear/, function(msg) {
  * Shared err message logic, primarily to handle removing the custom keyboard
  */
 function replyWithError(chatId, err) {
-  bot.sendMessage(chatId, 'Oh no! ' + err, {  
+  bot.sendMessage(chatId, 'Oh no! ' + err, {
     'parse_mode': 'Markdown',
     'reply_markup': {
       'hide_keyboard': false
