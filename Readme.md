@@ -79,6 +79,8 @@ Found 5 movies:
 
 Use the custom keyboard to select the movie.
 
+![Step One](https://i.imgur.com/BDgQiGP.png)
+
 The bot will then ask you for the quality
 
 ```
@@ -87,7 +89,11 @@ The bot will then ask you for the quality
 
 Send the profile using the custom keyboard
 
+![Step Two](https://i.imgur.com/V0is1eG.png)
+
 If everything goes well, you'll see a text from the bot saying the movie was added.
+
+![Step Three](https://i.imgur.com/tTTv3ir.png)
 
 ### Changelog
 
