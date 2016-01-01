@@ -79,7 +79,6 @@ bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
   var chatId = msg.chat.id;
   var fromId = msg.from.id;
   var movieName = match[2];
-  var mCount = 0
 
   couchpotato.get('movie.search', { 'q': movieName })
     .then(function(result) {
@@ -93,8 +92,7 @@ bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
       console.log(fromId + ' requested to search for movie ' + movieName);
 
       var movieList = [];
-      mCount = movies.length
-      var message = ['*Found ' + mCount + ' movies:*'];
+      var message = ['*Found ' + movies.length + ' movies:*'];
       var keyboardList = [];
 
       _.forEach(movies, function(n, key) {
