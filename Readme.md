@@ -97,6 +97,9 @@ If everything goes well, you'll see a text from the bot saying the movie was add
 
 ### Changelog
 
+#### v0.1.9
+- Fixes issue with the keyboard not displaying when one profile is enabled @jayrox
+
 #### v0.1.8
 - Quality Profiles options only display ones that are enabled in CouchPotato
 - More Housekeeping
