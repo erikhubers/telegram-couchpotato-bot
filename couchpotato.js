@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 var CouchPotatoAPI = require('couchpotato-api');
 var TelegramBot = require('node-telegram-bot-api');
@@ -79,6 +79,7 @@ bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
   var chatId = msg.chat.id;
   var fromId = msg.from.id;
   var movieName = match[2];
+  var mCount = 0
 
   couchpotato.get('movie.search', { 'q': movieName })
     .then(function(result) {
@@ -92,7 +93,8 @@ bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
       console.log(fromId + ' requested to search for movie ' + movieName);
 
       var movieList = [];
-      var message = ['*Found ' + movies.length + ' movies:*'];
+      mCount = movies.length
+      var message = ['*Found ' + mCount + ' movies:*'];
       var keyboardList = [];
 
       _.forEach(movies, function(n, key) {
@@ -126,11 +128,10 @@ bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
           (runtime ? ' - _' + runtime + 'm_' : '')
         );
 
-        keyboardList.push(
-          // One movie per row of custom keyboard
-          [keyboardValue]
-        );
+        // One movie per row of custom keyboard
+        keyboardList.push([keyboardValue]);
       });
+      message.push('\nPlease select from the menu below.');
 
       // set cache
       cache.set('movieList' + fromId, movieList);
@@ -139,16 +140,17 @@ bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
       return new Response(message.join('\n'), keyboardList);
     })
     .then(function(response) {
+      var keyboard = {
+        keyboard: response.keyboard,
+        one_time_keyboard: true
+      };
       var opts = {
         'disable_web_page_preview': true,
         'parse_mode': 'Markdown',
         'selective': 2,
-        'reply_markup': {
-          'keyboard': response.keyboard,
-          'one_time_keyboard': true
-        }
+        'reply_markup': JSON.stringify(keyboard),
       };
-
+      //console.log(opts)
       bot.sendMessage(chatId, response.message, opts);
     })
     .catch(function(err) {
@@ -250,6 +252,12 @@ function handleMovie(chatId, fromId, movieDisplayName) {
           keyboardRow = [];
         }
       });
+      
+      if (keyboardRow.length == 1 && keyboardList.length == 0) {
+        keyboardList.push([keyboardRow[0]])
+      }
+      response.push('\n\nPlease select from the menu below.');
+
 
       // set cache
       cache.set('movieProfileList' + fromId, profileList);
@@ -258,14 +266,17 @@ function handleMovie(chatId, fromId, movieDisplayName) {
       return new Response(response.join(' '), keyboardList);
     })
     .then(function(response) {
-      bot.sendMessage(chatId, response.message, {
-        'selective': 2,
+      var keyboard = {
+        keyboard: response.keyboard,
+        one_time_keyboard: true
+      };
+      var opts = {
+        'disable_web_page_preview': true,
         'parse_mode': 'Markdown',
-        'reply_markup': {
-          'keyboard': response.keyboard,
-          'one_time_keyboard': true
-        }
-      });
+        'selective': 2,
+        'reply_markup': JSON.stringify(keyboard),
+      };
+      bot.sendMessage(chatId, response.message, opts);
     })
     .catch(function(err) {
       replyWithError(chatId, err);
