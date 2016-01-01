@@ -1,6 +1,6 @@
 {
   "name": "telegram-couchpotato-bot",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "A Telegram bot to interact with your CouchPotato Web App",
   "dependencies": {
     "bluebird": "^2.9.2",
