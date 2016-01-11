@@ -4,16 +4,14 @@ Bot which lets you or others add movies to [CouchPotato](https://couchpota.to/) 
 
 Contact [@BotFather](http://telegram.me/BotFather) on Telegram to create and get a bot token.
 
-For now, please make your bot username something unique. For example @fred-flintstone-stonepotato-bot or something
-
 Getting Started
 ---------------
 
-### Prerequisites
+## Prerequisites
 - [Node.js](http://nodejs.org)
 - [Git](https://git-scm.com/downloads) (optional)
 
-### Installation
+## Installation
 
 ```bash
 # Clone the repository
@@ -26,10 +24,26 @@ cd telegram-couchpotato-bot
 npm install
 ```
 
-Then copy `config.json.template` to `config.json` and fill in the values.
+```bash
+# Copy acl.json.template to acl.json
+cp acl.json.template acl.json
+```
 
-Please refer to the CouchPotato specific configuration below:
+```bash
+# Copy config.json.template to config.json
+cp config.json.template config.json
+```
 
+In `config.json` fill in the values below:
+
+Telegram:
+- **botToken** your Telegram Bot token
+
+Bot:
+- **password** the password to access the bot
+- **owner** your Telegram user ID. (you can fill this in later)
+
+CouchPotato:
 - **hostname**: hostname where CouchPotato runs (required)
 - **apiKey**: Your API to access CouchPotato (required)
 - **port**: port number CouchPotato is listening on (optional, default: 5050)
@@ -38,29 +52,19 @@ Please refer to the CouchPotato specific configuration below:
 - **username**: HTTP Auth username (default: empty)
 - **password**: HTTP Auth password (default: empty)
 
+**Important note**: Restart the bot after making any changes to the `config.json` file.
+
 ```bash
 # Start the bot
 node couchpotato.js
 ```
 
-### Docker
-Alternatively you may use Docker to start the bot
-```
-docker run --name telegram-couchpotato-bot \
-  -e TELEGRAM_BOTTOKEN=
-  -e COUCHPOTATO_HOST=
-  -e COUCHPOTATO_APIKEY=
-  -e COUCHPOTATO_PORT=
-  -e COUCHPOTATO_URLBASE=
-  -e COUCHPOTATO_SSL=
-  -e COUCHPOTATO_USERNAME=
-  -e COUCHPOTATO_PASSWORD=
-  telegram-couchpotato-bot
-```
+## Usage (commands)
 
-**Prebuilt** Docker image for this bot can be found [here](https://hub.docker.com/r/subzero79/docker-telegram-couchpotato-bot), thanks [@subzero79](https://github.com/subzero79)
+### First use
+Send the bot the `/auth` command with the password you created in `config.json`
 
-### Usage
+### Adding a movie
 
 Send the bot a message with the movie name
 
@@ -95,51 +99,36 @@ If everything goes well, you'll see a text from the bot saying the movie was add
 
 ![Step Three](https://raw.githubusercontent.com/onedr0p/telegram-couchpotato-bot/master/examples/step_3.png)
 
-### Changelog
+### Additional commands
+* `/clear` clear all previous commands and cache
 
-#### v0.1.9
-- Fixes issue with the keyboard not displaying when one profile is enabled @jayrox
+### Admin commands
+* `/wanted` search all missing/wanted movies
+* `/users` list users
+* `/revoke` revoke user from bot
+* `/unrevoke` un-revoke user from bot
 
-#### v0.1.8
-- Quality Profiles options only display ones that are enabled in CouchPotato
-- More Housekeeping
+## Docker
+Alternatively you may use Docker to start the bot
+```
+docker run --name telegram-couchpotato-bot \
+  -e TELEGRAM_BOTTOKEN=
+  -e BOT_PASSWORD=
+  -e BOT_OWNER=
+  -e BOT_MAXRESULTS=
+  -e COUCHPOTATO_HOST=
+  -e COUCHPOTATO_APIKEY=
+  -e COUCHPOTATO_PORT=
+  -e COUCHPOTATO_URLBASE=
+  -e COUCHPOTATO_SSL=
+  -e COUCHPOTATO_USERNAME=
+  -e COUCHPOTATO_PASSWORD=
+  telegram-couchpotato-bot
+```
 
-#### v0.1.7
-- Added custom keyboard, thanks @bybeet
+**Prebuilt** Docker image for this bot can be found [here](https://hub.docker.com/r/subzero79/docker-telegram-couchpotato-bot), thanks [@subzero79](https://github.com/subzero79)
 
-#### v0.1.6
-- Added command `/searchwanted` for searching for all wanted movies
-- Added command `/clear` to wipe all previous commands chain
-- More housekeeping
-
-#### v0.1.5
-- CouchPotato lib is now on npm (you will need to run npm install if you are upgrading)
-- Updated a few dev things
-
-#### v0.1.4
-- Added docker support
-- Fixed domain names no verifying
-- Updated Readme.md
-- Thanks @danielcbaldwin
-
-#### v0.1.3
-- Change /s flag to /q (/query) flag
-- Updated cache keys
-- Added count of profiles to reponse
-
-#### v0.1.2
-- Updated couchpotato lib
-- Added config template to project
-
-#### v0.1.1
-- Added support for profiles (qualities)
-- Completely overhauled the way to add movies
-- Added short commands /s for search /m for movie and /p for profile you can still use long commands
-
-#### v0.1.0
-- Initial release
-
-### License
+## License
 (The MIT License)
 
 Copyright (c) 2015 Devin Buhl <devin.kray@gmail.com>

@@ -1,14 +1,18 @@
 {
   "name": "telegram-couchpotato-bot",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "A Telegram bot to interact with your CouchPotato Web App",
   "dependencies": {
     "bluebird": "^2.9.2",
+    "fs-extra": "^0.26.4",
+    "i18n": "^0.5.0",
     "lodash": "^3.10.0",
+    "moment": "^2.11.0",
     "node-cache": "^3.0.0",
     "node-telegram-bot-api": "^0.17.0",
     "request": "^2.67.0",
-    "couchpotato-api": "^0.1.0"
+    "couchpotato-api": "^0.1.0",
+    "winston": "^2.1.1"
   },
   "repository": "git://github.com/onedr0p/telegram-couchpotato-bot",
   "keywords": [

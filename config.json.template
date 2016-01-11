@@ -2,6 +2,11 @@
   "telegram": {
     "botToken": ""
   },
+  "bot": {
+    "password": "",
+    "owner": 0,
+    "maxResults": 15
+  },
   "couchpotato": {
     "hostname": "",
     "apiKey": "",
