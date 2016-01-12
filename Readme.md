@@ -8,7 +8,7 @@ Getting Started
 ---------------
 
 ## Prerequisites
-- [Node.js](http://nodejs.org)
+- [Node.js](http://nodejs.org) v4.2.x
 - [Git](https://git-scm.com/downloads) (optional)
 
 ## Installation
