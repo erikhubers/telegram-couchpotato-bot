@@ -489,73 +489,105 @@ function handleMovie(userId, movieDisplayName) {
     return replyWithError(userId, new Error('Could not find the movie with title "' + movieDisplayName + '"'));
   }
 
-  // set movie option to cache
-  cache.set('movieId' + userId, movie.id);
+  // create a workflow
+  var workflow = new (require('events').EventEmitter)();
 
-  couchpotato.get('profile.list')
-    .then(function(result) {
-      if (!result.list) {
-        throw new Error('could not get profiles, try searching again');
-      }
+  // check for existing movie
+  workflow.on('checkCouchPotatoMovie', function () {
+    couchpotato.get('media.list')
+      .then(function(result) {
+        logger.info('user: %s, message: looking for existing movie', userId);
 
-      if (!cache.get('movieList' + userId)) {
-        throw new Error('could not get previous movie list, try searching again');
-      }
+        var existingMovie = _.filter(result.movies, function(item) {
+          return item.info.imdb == movie.movie_id || item.info.tmdb_id == movie.movie_id;
+        })[0];
 
-      return result.list;
-    })
-    .then(function(profiles) {
-      logger.info('user: %s, message: requested to get profile list', userId);
+        if (existingMovie) {
+          throw new Error('Movie already exists and is already being tracked by CouchPotato');
+        }
+        workflow.emit('getCouchPotatoProfile');
+      }).catch(function(err) {
+        replyWithError(userId, err);
+      });
+  });
 
-      // only select profiles that are enabled in CP
-      var enabledProfiles = _.filter(profiles, function(item) { return item.hide === false; });
+  workflow.on('getCouchPotatoProfile', function () {
 
-      var response = ['*Found ' + enabledProfiles.length + ' profiles:*\n'];
-      var profileList = [], keyboardList = [], keyboardRow = [];
-      _.forEach(enabledProfiles, function(n, key) {
-        profileList.push({
-          'id': key,
-          'label': n.label,
-          'hash': n._id
+    // set movie option to cache
+    cache.set('movieId' + userId, movie.id);
+
+    couchpotato.get('profile.list')
+      .then(function(result) {
+        if (!result.list) {
+          throw new Error('could not get profiles, try searching again');
+        }
+
+        if (!cache.get('movieList' + userId)) {
+          throw new Error('could not get previous movie list, try searching again');
+        }
+
+        return result.list;
+      })
+      .then(function(profiles) {
+        logger.info('user: %s, message: requested to get profile list', userId);
+
+        // only select profiles that are enabled in CP
+        var enabledProfiles = _.filter(profiles, function(item) { return item.hide === false; });
+
+        var response = ['*Found ' + enabledProfiles.length + ' profiles:*\n'];
+        var profileList = [], keyboardList = [], keyboardRow = [];
+        _.forEach(enabledProfiles, function(n, key) {
+          profileList.push({
+            'id': key,
+            'label': n.label,
+            'hash': n._id
+          });
+
+          response.push('*' + (key + 1) + '*) ' + n.label);
+
+          // Profile names are short, put two on each custom
+          // keyboard row to reduce scrolling
+          keyboardRow.push(n.label);
+          if (keyboardRow.length === 2) {
+            keyboardList.push(keyboardRow);
+            keyboardRow = [];
+          }
         });
 
-        response.push('*' + (key + 1) + '*) ' + n.label);
-
-        // Profile names are short, put two on each custom
-        // keyboard row to reduce scrolling
-        keyboardRow.push(n.label);
-        if (keyboardRow.length === 2) {
-          keyboardList.push(keyboardRow);
-          keyboardRow = [];
+        if (keyboardRow.length === 1 && keyboardList.length === 0) {
+          keyboardList.push([keyboardRow[0]]);
         }
+        response.push('\n\nPlease select from the menu below.');
+
+
+        // set cache
+        cache.set('movieProfileList' + userId, profileList);
+        cache.set('state' + userId, state.couchpotato.PROFILE);
+
+        return {
+          message: response.join('\n'),
+          keyboard: keyboardList
+        };
+      })
+      .then(function(response) {
+        bot.sendMessage(userId, response.message, {
+          'disable_web_page_preview': true,
+          'parse_mode': 'Markdown',
+          'selective': 2,
+          'reply_markup': JSON.stringify({ keyboard: response.keyboard, one_time_keyboard: true })
+        });
+      })
+      .catch(function(err) {
+        replyWithError(userId, err);
       });
 
-      if (keyboardRow.length === 1 && keyboardList.length === 0) {
-        keyboardList.push([keyboardRow[0]]);
-      }
-      response.push('\n\nPlease select from the menu below.');
-
-
-      // set cache
-      cache.set('movieProfileList' + userId, profileList);
-      cache.set('state' + userId, state.couchpotato.PROFILE);
-
-      return {
-        message: response.join('\n'),
-        keyboard: keyboardList
-      };
-    })
-    .then(function(response) {
-      bot.sendMessage(userId, response.message, {
-        'disable_web_page_preview': true,
-        'parse_mode': 'Markdown',
-        'selective': 2,
-        'reply_markup': JSON.stringify({ keyboard: response.keyboard, one_time_keyboard: true })
-      });
-    })
-    .catch(function(err) {
-      replyWithError(userId, err);
     });
+
+    /**
+     * Initiate the workflow
+     */
+    workflow.emit('checkCouchPotatoMovie');
+
 }
 
 function handleProfile(userId, profileName) {
