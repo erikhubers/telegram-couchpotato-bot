@@ -404,6 +404,80 @@ bot.onText(/\/unrevoke/, function(msg) {
   });
 });
 
+bot.onText(/\/library\s?(.+)?/, function(msg, match) {
+  var fromId = msg.from.id;
+  var query = match[1] || 0;
+  /*
+  status	array or csv	Filter media by status. Example:"active,done"
+  search	string	Search media title
+  release_status	array or csv	Filter media by status of its releases. Example:"snatched,available"
+  limit_offset	string	Limit and offset the media list. Examples: "50" or "50,30"
+  type	string	Media type to filter on.
+  starts_with	string	Starts with these characters. Example: "a" returns all media starting with the letter "a"
+  */
+
+  couchpotato.get('media.list')
+    .then(function(result) {
+      logger.info('user: %s, message: all movies', fromId);
+
+      var response = [];
+      _.forEach(result.movies, function(n, key) {
+        var movieId = (n.imdb ? n.imdb : n.tmdb_id);
+        var onIMDb = (n.via_imdb ? true : false);
+        var movie = (onIMDb ? '[' + n.title + '](http://imdb.com/title/' + movieId + ')' : '[' + n.title + '](https://www.themoviedb.org/movie/' + movieId + ')');
+
+        if (query) {
+          if (n.title.search( new RegExp(query, 'i') ) !== -1) {
+            response.push(movie);
+          }
+        } else {
+          response.push(movie);
+        }
+      });
+
+      if (!response.length) {
+        return replyWithError(fromId, new Error('Unable to locate ' + query + ' in sonarr library'));
+      }
+
+      response.sort();
+
+      if (query) {
+        // add title to begining of the array
+        response.unshift('*Found matching results in CouchPotato library:*');
+      }
+
+      if (response.length > 51) {
+        var splitReponse = _.chunk(response, 51);
+        // splitReponse.sort();
+        _.forEach(splitReponse, function(n) {
+          n.sort();
+          bot.sendMessage(fromId, n.join('\n'), { 'parse_mode': 'Markdown', 'selective': 2 });
+        });
+      } else {
+        bot.sendMessage(fromId, response.join('\n'), { 'parse_mode': 'Markdown', 'selective': 2 });
+      }
+
+      // if (!result.success) {
+      //   throw new Error('could not add movie, try searching again.');
+      // }
+      //
+      // bot.sendMessage(userId, '[Movie added!](' + movie.thumb + ')', {
+      //   'selective': 2,
+      //   'parse_mode': 'Markdown',
+      //   'reply_markup': {
+      //     'hide_keyboard': true
+      //   }
+      // });
+    })
+    .catch(function(err) {
+      replyWithError(fromId, err);
+    })
+    .finally(function() {
+      clearCache(fromId);
+    });
+
+});
+
 function handleMovie(userId, movieDisplayName) {
   var movieList = cache.get('movieList' + userId);
   if (!movieList) {
