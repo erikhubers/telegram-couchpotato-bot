@@ -446,9 +446,9 @@ bot.onText(/\/library\s?(.+)?/, function(msg, match) {
         response.unshift('*Found matching results in CouchPotato library:*');
       }
 
-      if (response.length > 51) {
-        var splitReponse = _.chunk(response, 51);
-        // splitReponse.sort();
+      if (response.length > 50) {
+        var splitReponse = _.chunk(response, 50);
+        splitReponse.sort();
         _.forEach(splitReponse, function(n) {
           n.sort();
           bot.sendMessage(fromId, n.join('\n'), { 'parse_mode': 'Markdown', 'selective': 2 });
@@ -456,18 +456,6 @@ bot.onText(/\/library\s?(.+)?/, function(msg, match) {
       } else {
         bot.sendMessage(fromId, response.join('\n'), { 'parse_mode': 'Markdown', 'selective': 2 });
       }
-
-      // if (!result.success) {
-      //   throw new Error('could not add movie, try searching again.');
-      // }
-      //
-      // bot.sendMessage(userId, '[Movie added!](' + movie.thumb + ')', {
-      //   'selective': 2,
-      //   'parse_mode': 'Markdown',
-      //   'reply_markup': {
-      //     'hide_keyboard': true
-      //   }
-      // });
     })
     .catch(function(err) {
       replyWithError(fromId, err);
