@@ -517,10 +517,10 @@ function handleMovie(userId, movieDisplayName) {
         return result.list;
       })
       .then(function(profiles) {
-        logger.info('user: %s, message: requested to get profile list', userId);
+        logger.info('user: %s, message: requested to get profile list with ' + profiles.length + ' entries', userId);
 
         // only select profiles that are enabled in CP
-        var enabledProfiles = _.filter(profiles, function(item) { return item.hide === false; });
+        var enabledProfiles = _.filter(profiles, function(item) { return (typeof item.hide == 'undefined' || item.hide == false); });
 
         var response = ['*Found ' + enabledProfiles.length + ' profiles:*\n'];
         var profileList = [], keyboardList = [], keyboardRow = [];
