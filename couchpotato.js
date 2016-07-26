@@ -63,6 +63,18 @@ bot.onText(/\/start/, function(msg) {
 });
 
 /*
+ * handle help command
+ */
+bot.onText(/\/help/, function(msg) {
+  var fromId = msg.from.id;
+
+  verifyUser(fromId);
+
+  logger.info('user: %s, message: sent \'/help\' command', fromId);
+  sendCommands(fromId);
+});
+
+/*
 handle query command
  */
 bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
@@ -436,7 +448,7 @@ bot.onText(/\/library\s?(.+)?/, function(msg, match) {
       });
 
       if (!response.length) {
-        return replyWithError(fromId, new Error('Unable to locate ' + query + ' in sonarr library'));
+        return replyWithError(fromId, new Error('Unable to locate ' + query + ' in couchpotato library'));
       }
 
       response.sort();
@@ -842,4 +854,28 @@ function clearCache(userId) {
  */
 function getTelegramName(user) {
    return user.username || (user.first_name + (' ' + user.last_name || ''));
+}
+
+/*
+ * Send Commands To chat
+ */
+function sendCommands(fromId) {
+  var response = ['Hello ' + getTelegramName(fromId) + '!'];
+  response.push('Below is a list of commands you have access to:');
+  response.push('\n*General commands:*');
+  response.push('/start to start this bot');
+  response.push('/help to for this list of commands');
+  response.push('`/q [movie name]` search for a movie');
+  response.push('`/library [movie name]` search CouchPotato library');
+  response.push('/clear clear all previous commands');
+
+  if (isAdmin(fromId)) {
+    response.push('\n*Admin commands:*');
+    response.push('/wanted search all missing/wanted movies');
+    response.push('/users list users');
+    response.push('/revoke revoke user from bot');
+    response.push('/unrevoke un-revoke user from bot');
+  }
+
+  return bot.sendMessage(fromId, response.join('\n'), { 'parse_mode': 'Markdown', 'selective': 2 });
 }
