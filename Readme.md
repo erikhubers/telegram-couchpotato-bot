@@ -1,3 +1,5 @@
+**Unfortunately I don't use Telegram anymore and won't be providing updates for this, however, I'll still accept PRs.**
+
 # telegram-couchpotato-bot
 
 Bot which lets you or others add movies to [CouchPotato](https://couchpota.to/) via the messaging service [Telegram](https://telegram.org/).
