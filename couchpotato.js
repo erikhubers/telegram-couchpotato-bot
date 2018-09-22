@@ -79,6 +79,7 @@ handle query command
  */
 bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
   var fromId = msg.from.id;
+  var chatId = msg.chat.id;
   var movieName = match[2];
 
   verifyUser(fromId);
@@ -144,7 +145,7 @@ bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
       };
     })
     .then(function(response) {
-      bot.sendMessage(fromId, response.message, {
+      bot.sendMessage(chatId, response.message, {
         'disable_web_page_preview': true,
         'parse_mode': 'Markdown',
         'selective': 2,
@@ -152,7 +153,7 @@ bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
       });
     })
     .catch(function(err) {
-      replyWithError(fromId, err);
+      replyWithError(chatId, err);
     });
 
 });
@@ -163,6 +164,7 @@ bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
  */
 bot.on('message', function(msg) {
   var fromId = msg.from.id;
+  var chatId = msg.chat.id;
   var message = msg.text;
 
   verifyUser(fromId);
@@ -177,11 +179,11 @@ bot.on('message', function(msg) {
       switch(currentState) {
         case state.couchpotato.MOVIE:
           logger.info('user: %s, message: choose the movie %s', fromId, message);
-          handleMovie(fromId, message);
+          handleMovie(chatId, fromId, message);
           break;
         case state.couchpotato.PROFILE:
           logger.info('user: %s, message: choose the profile "%s"', fromId, message);
-          handleProfile(fromId, message);
+          handleProfile(chatId, fromId, message);
           break;
         case state.admin.REVOKE_CONFIRM:
           verifyAdmin(fromId);
@@ -418,6 +420,7 @@ bot.onText(/\/unrevoke/, function(msg) {
 
 bot.onText(/\/library\s?(.+)?/, function(msg, match) {
   var fromId = msg.from.id;
+  var chatId = msg.chat.id;
   var query = match[1] || 0;
   /*
   status	array or csv	Filter media by status. Example:"active,done"
@@ -448,7 +451,7 @@ bot.onText(/\/library\s?(.+)?/, function(msg, match) {
       });
 
       if (!response.length) {
-        return replyWithError(fromId, new Error('Unable to locate ' + query + ' in couchpotato library'));
+        return replyWithError(chatId, new Error('Unable to locate ' + query + ' in couchpotato library'));
       }
 
       response.sort();
@@ -463,14 +466,14 @@ bot.onText(/\/library\s?(.+)?/, function(msg, match) {
         splitReponse.sort();
         _.forEach(splitReponse, function(n) {
           n.sort();
-          bot.sendMessage(fromId, n.join('\n'), { 'parse_mode': 'Markdown', 'selective': 2 });
+          bot.sendMessage(chatId, n.join('\n'), { 'parse_mode': 'Markdown', 'selective': 2 });
         });
       } else {
-        bot.sendMessage(fromId, response.join('\n'), { 'parse_mode': 'Markdown', 'selective': 2 });
+        bot.sendMessage(chatId, response.join('\n'), { 'parse_mode': 'Markdown', 'selective': 2 });
       }
     })
     .catch(function(err) {
-      replyWithError(fromId, err);
+      replyWithError(chatId, err);
     })
     .finally(function() {
       clearCache(fromId);
@@ -478,15 +481,15 @@ bot.onText(/\/library\s?(.+)?/, function(msg, match) {
 
 });
 
-function handleMovie(userId, movieDisplayName) {
+function handleMovie(chatId, userId, movieDisplayName) {
   var movieList = cache.get('movieList' + userId);
   if (!movieList) {
-    return replyWithError(userId, new Error('Something went wrong, try searching again'));
+    return replyWithError(chatId, new Error('Something went wrong, try searching again'));
   }
 
   var movie = _.filter(movieList, function(item) { return item.keyboard_value === movieDisplayName; })[0];
   if(!movie){
-    return replyWithError(userId, new Error('Could not find the movie with title "' + movieDisplayName + '"'));
+    return replyWithError(chatId, new Error('Could not find the movie with title "' + movieDisplayName + '"'));
   }
 
   // create a workflow
@@ -507,7 +510,7 @@ function handleMovie(userId, movieDisplayName) {
         }
         workflow.emit('getCouchPotatoProfile');
       }).catch(function(err) {
-        replyWithError(userId, err);
+        replyWithError(chatId, err);
       });
   });
 
@@ -570,7 +573,7 @@ function handleMovie(userId, movieDisplayName) {
         };
       })
       .then(function(response) {
-        bot.sendMessage(userId, response.message, {
+        bot.sendMessage(chatId, response.message, {
           'disable_web_page_preview': true,
           'parse_mode': 'Markdown',
           'selective': 2,
@@ -578,7 +581,7 @@ function handleMovie(userId, movieDisplayName) {
         });
       })
       .catch(function(err) {
-        replyWithError(userId, err);
+        replyWithError(chatId, err);
       });
 
     });
@@ -590,17 +593,17 @@ function handleMovie(userId, movieDisplayName) {
 
 }
 
-function handleProfile(userId, profileName) {
+function handleProfile(chatId, userId, profileName) {
   var profileList = cache.get('movieProfileList' + userId);
   var movieId = cache.get('movieId' + userId);
   var movieList = cache.get('movieList' + userId);
   if (!profileList || !movieList || !movieId) {
-    return replyWithError(userId, new Error('Something went wrong, try searching again'));
+    return replyWithError(chatId, new Error('Something went wrong, try searching again'));
   }
 
   var profile = _.filter(profileList, function(item) { return item.label === profileName; })[0];
   if(!profile) {
-    return replyWithError(userId, new Error('Could not find the profile "' + profileName + '"'));
+    return replyWithError(chatId, new Error('Could not find the profile "' + profileName + '"'));
   }
 
   var movie = _.filter(movieList, function(item) { return item.id === movieId; })[0];
@@ -617,7 +620,7 @@ function handleProfile(userId, profileName) {
         throw new Error('could not add movie, try searching again.');
       }
 
-      bot.sendMessage(userId, '[Movie added!](' + movie.thumb + ')', {
+      bot.sendMessage(chatId, '[Movie added!](' + movie.thumb + ')', {
         'selective': 2,
         'parse_mode': 'Markdown',
         'reply_markup': {
@@ -626,7 +629,7 @@ function handleProfile(userId, profileName) {
       });
     })
     .catch(function(err) {
-      replyWithError(userId, err);
+      replyWithError(chatId, err);
     })
     .finally(function() {
       clearCache(userId);
