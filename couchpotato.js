@@ -183,7 +183,7 @@ bot.on('message', function(msg) {
           break;
         case state.couchpotato.PROFILE:
           logger.info('user: %s, message: choose the profile "%s"', fromId, message);
-          handleProfile(chatId, fromId, message);
+          handleProfile(chatId, msg.from, message);
           break;
         case state.admin.REVOKE_CONFIRM:
           verifyAdmin(fromId);
@@ -593,7 +593,8 @@ function handleMovie(chatId, userId, movieDisplayName) {
 
 }
 
-function handleProfile(chatId, userId, profileName) {
+function handleProfile(chatId, user, profileName) {
+  var userId = user.id;
   var profileList = cache.get('movieProfileList' + userId);
   var movieId = cache.get('movieId' + userId);
   var movieList = cache.get('movieList' + userId);
@@ -615,6 +616,9 @@ function handleProfile(chatId, userId, profileName) {
     })
     .then(function(result) {
       logger.info('user: %s, message: added movie "%s"', userId, movie.title);
+      bot.sendMessage(config.bot.owner, `*${getTelegramName(user)}* added movie *${movie.title}*`, {
+        'parse_mode': 'Markdown',
+      });
 
       if (!result.success) {
         throw new Error('could not add movie, try searching again.');
