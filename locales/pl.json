@@ -1,0 +1,6 @@
+{
+  "hello": "Dzień dobry",
+  "notAuthorized": "Nie masz uprawnień do korzystania z tego bota.\n`/auth [password]` aby autoryzować.",
+  "adminOnly": "Tylko administrator może korzystać z tej funkcji.",
+  "selectFromMenu": "\nProszę wybrać z poniższego menu."
+}
