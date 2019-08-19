@@ -1,4 +1,4 @@
-**Unfortunately I don't use Telegram anymore and won't be providing updates for this, however, I'll still accept PRs.**
+**Unfortunately I don't use Telegram or CouchPotato anymore and won't be providing updates for this**
 
 # telegram-couchpotato-bot
 
