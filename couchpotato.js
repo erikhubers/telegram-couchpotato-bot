@@ -631,6 +631,10 @@ function handleProfile(chatId, user, profileName) {
           'hide_keyboard': true
         }
       });
+
+      var movieTitle = movie.via_imdb ? '[' + movie.title + '](http://imdb.com/title/' + movie.movie_id + ')' : '[' + movie.title + '](https://www.themoviedb.org/movie/' + movie.movie_id + ')';
+      bot.sendMessage(config.bot.owner, 'User "' + getTelegramName(msg.from) + '" has requested movie ' + movieTitle + '('+movie.year+').');
+
     })
     .catch(function(err) {
       replyWithError(chatId, err);
@@ -860,7 +864,7 @@ function clearCache(userId) {
  * get telegram name
  */
 function getTelegramName(user) {
-   return user.username || (user.first_name + (' ' + user.last_name || ''));
+   return user.username || (user.first_name + (user.last_name ? user.last_name : ""));
 }
 
 /*
