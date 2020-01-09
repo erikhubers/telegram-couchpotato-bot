@@ -108,7 +108,7 @@ bot.onText(/\/[Qq](uery)? (.+)/, function(msg, match) {
         var movieId = ('imdb' in n ? n.imdb : n.tmdb_id);
         var thumb = ('images' in n ? ('poster' in n.images ? n.images.poster[0] : '') : '');
         var runtime = ('runtime' in n ? n.runtime : '');
-        var onIMDb = ('via_imdb' in n ? true : false);
+        var onIMDb = ('via_tmdb' in n ? false: true);
         var keyboardValue = title + (year ? ' - ' + year : '');
 
         movieList.push({
